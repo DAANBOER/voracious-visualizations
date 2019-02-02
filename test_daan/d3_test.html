@@ -11,6 +11,16 @@
     <script type="text/javascript" src="../d3/d3.js"></script>
     <script>
         /*d3 code*/
+        var dataset;
+
+        var simpleData = [
+            1,
+            2,
+            3,
+            4,
+            5
+        ]
+
         var data = [
             { x: 10.0, y: 9.14 },
             { x: 8.0, y: 8.14 },
@@ -19,11 +29,16 @@
             { x: 11.0, y: 9.26 }
         ];
 
-        svg.selectAll("circle")
-            .data(data)
-            .enter().append("circle")
-            .attr("cx", x)
-            .attr("cy", y)
-            .attr("r", 2.5);
+        d3.select("body").selectAll("p")
+            .data(simpleData)
+            .enter()
+            .append("p")
+            .text(function (d) { return d; });
+
+        /* load csv file
+        d3.csv("../datasets/WDIData.csv", function (data) {
+            dataset = data;
+            console.log("done");
+        }); */
     </script>
 </body>

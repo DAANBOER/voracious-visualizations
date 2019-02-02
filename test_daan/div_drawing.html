@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+    div.bar {
+        display: inline-block;
+        width: 20px;
+        height: 75px;
+        /* We'll override height later */
+        background-color: teal;
+        margin-right: 2px;
+    }
+</style>
+
+<body>
+    <script src="../d3/d3.js"></script>
+    <script>
+        var dataset = [5, 10, 15, 20, 25];
+
+        d3.select("body").selectAll("div")
+            .data(dataset)
+            .enter()
+            .append("div")
+            .attr("class", "bar")
+            .style("height", function(d) {
+                return d*5 + "px";
+            });
+    </script>
+</body>
