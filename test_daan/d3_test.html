@@ -1,6 +1,29 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<style>/* CSS */</style>
+<style>/* CSS */
+    pre, code {
+        font-family: "Menlo", monospace;
+        font-size: 48px;
+    }
+  </style>
+
 <body>
-<script src="../d3/d3.js"></script>
-<script>/* JavaScript */</script>
+    <script type="text/javascript" src="../d3/d3.js"></script>
+    <script>
+        /*d3 code*/
+        var data = [
+            { x: 10.0, y: 9.14 },
+            { x: 8.0, y: 8.14 },
+            { x: 13.0, y: 8.74 },
+            { x: 9.0, y: 8.77 },
+            { x: 11.0, y: 9.26 }
+        ];
+
+        svg.selectAll("circle")
+            .data(data)
+            .enter().append("circle")
+            .attr("cx", x)
+            .attr("cy", y)
+            .attr("r", 2.5);
+    </script>
+</body>
