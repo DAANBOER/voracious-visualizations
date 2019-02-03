@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>/* CSS */
+    .visualization {
+        height: 500px;
+        width: 500px;
+        border: 8px solid lightgray;
+    }
+    .draw-area {
+        height: 475px;
+        width: 500px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+    .title-area {
+        height: 25px;
+        width: 500px;
+        text-align: center;
+    }
+</style>
+
+<body>
+    <script type="text/javascript" src="../d3/d3.js"></script>
+    <script type="text/javascript">
+        /*d3 code*/
+
+        var h = 800;
+        var w = 500;
+
+        var xPadding = 25;
+        var yPadding = 0;
+
+        var xScale;
+        var yScale;
+
+        var key = function (d) {
+            return d.country.id;
+        };
+
+        d3.select("body")
+            .append("p")
+            .attr('id', 'asc')
+            .text("Ascending");
+
+        d3.select("body")
+            .append("p")
+            .attr('id', 'des')
+            .text("Descending");
+
+        var vis = d3.select("body")
+            .append('div')
+            .attr('class', 'visualization');
+        //.attr('width', w)
+        //.attr('height', h)
+
+        var titleArea = vis.append('div')
+            .attr('class', 'title-area');
+
+        titleArea.append('text')
+            .text("Population per country in the year 2000");
+
+        var drawArea = vis.append('div')
+            .attr('class', 'draw-area');
+
+        var svg = drawArea.append("svg")
+            .attr('width', w)
+            .attr('height', h);
+
+        d3.json("http://api.worldbank.org/v2/country/all/indicator/SP.POP.TOTL?date=2000&per_page=400&format=json")
+            .then(test);
+
+        function test(data) {
+            var json = data[1].filter(filterCombined);
+
+            h = json.length * 25;
+
+            svg.attr('height', h);
+
+            console.log(json);
+            console.log(json.length);
+
+            xScale = d3.scaleLinear()
+                .domain([0, d3.max(json, function (d) { return d.value; })])
+                .range([1, w - 2 * xPadding]);
+
+            yScale = d3.scaleBand()
+                .domain(d3.range(json.length))
+                .rangeRound([0, h])
+                .paddingInner(0.05);
+
+            var groups = svg.selectAll('g')
+                .data(json, key)
+                .enter()
+                .append('g')
+                .attr("transform", function (d, i) {
+                    return "translate(0," + yScale(i) + ")";
+                })
+                .on('mouseover', function () {
+                    d3.select(this)
+                        .select('rect.bar')
+                        .attr('fill', 'orange');
+                })
+                .on('mouseout', function () {
+                    d3.select(this)
+                        .select('rect.bar')
+                        .transition()
+                        .duration(50)
+                        .attr('fill', 'teal');
+                });
+
+            groups.append('rect')
+                .attr('class', 'bar')
+                .attr("x", xPadding)
+                .attr("y", 0)
+                .attr('width', function (d) {
+                    return xScale(d.value);
+                })
+                .attr('height', yScale.bandwidth())
+                .attr("fill", "teal");
+
+            groups.append("text")
+                .text(function (d) {
+                    return d.country.id;
+                })
+                .attr('text-anchor', 'end')
+                .attr("x", function (d) {
+                    return xPadding - 3;
+                })
+                .attr("y", function (d) {
+                    return yScale.bandwidth() / 2 + 5;
+                })
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "11px")
+                .attr("fill", "black");
+
+            groups.append('rect')
+                .attr('class', 'row')
+                .attr('x', 0)
+                .attr('y', 0)
+                .attr('width', w)
+                .attr('height', yScale.bandwidth())
+                .attr('fill', 'none')
+                .attr('pointer-events', 'all');
+        }
+
+        var filterCombined = function (d) {
+            return (d.countryiso3code != "");
+        }
+
+        var sortBars = function (ascending = true) {
+            svg.selectAll('g')
+                .sort(function (a, b) {
+                    if (ascending) {
+                        return d3.ascending(a.value, b.value);
+                    } else {
+                        return d3.descending(a.value, b.value);
+                    }
+                })
+                .transition()
+                .duration(1000)
+                .attr("transform", function (d, i) {
+                    return "translate(0," + yScale(i) + ")";
+                });
+        };
+
+        d3.select("body")
+            .selectAll("p")
+            .on("click", function () {
+                sortBars(d3.select(this).attr('id') == 'asc');
+            });
+
+        /* load csv file
+        d3.csv("../datasets/WDIData.csv", function (data) {
+            dataset = data;
+            console.log("done");
+        }); */
+    </script>
+</body>
