@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>D3 Page Template</title>
+    <script type="text/javascript" src="../d3/d3.js"></script>
+</head>
+
+<body>
+    <script type="text/javascript">
+        d3.select("body").append("p").text("Test loading data with API");
+        d3.json("http://api.worldbank.org/v2/country/US/indicators/NY.GDP.MKTP.CD?format=json")
+            .then(test);
+
+        function test(data) {
+            var json = data[1];
+            
+            console.log(json);
+            }
+    </script>
+</body>
+
+</html>

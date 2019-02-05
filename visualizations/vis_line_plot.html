@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>/* CSS */
+    .visualization {
+        height: 375px;
+        width: 500px;
+        border: 8px solid lightgray;
+    }
+    .draw-area {
+        height: 350px;
+        width: 500px;
+    }
+    .title-area {
+        height: 25px;
+        width: 500px;
+        text-align: center;
+    }
+</style>
+
+<body>
+    <script type="text/javascript" src="../d3/d3.js"></script>
+    <script type="text/javascript">
+        /*d3 code*/
+
+        /* Initializing parameters for placement and scaling */
+        var h = 350;
+        var w = 500;
+
+        var xPaddingRight = 25;
+        var xPaddingLeft = 50;
+        var yPaddingBottom = 25;
+        var yPaddingTop = 25;
+
+        var xScale;
+        var yScale;
+
+        var key = function (d) {
+            return d.country.id;
+        };
+
+        /* Add divs for total visualization, title and draw area */
+        var vis = d3.select("body")
+            .append('div')
+            .attr('class', 'visualization');
+
+        var titleArea = vis.append('div')
+            .attr('class', 'title-area');
+
+        /* Set title */
+        titleArea.append('text')
+            .text("GDP USA (in USD) over time");
+
+        var drawArea = vis.append('div')
+            .attr('class', 'draw-area');
+
+        /* Initialize vector image as svg */
+        var svg = drawArea.append("svg")
+            .attr('width', w)
+            .attr('height', h);
+
+
+        /* Set format yAxis */
+        var formatAsUSD = d3.format("$.0e");
+        var formatAsYear = d3.format("d");
+
+        /* Retrieve data */
+        d3.json("http://api.worldbank.org/v2/country/US/indicators/NY.GDP.MKTP.CD?format=json")
+            .then(test);
+
+        function test(data) {
+            var json = data[1].filter(function (d) {
+                return d.value != null;
+            });
+
+            console.log(json);
+            console.log(json.length);
+
+            /* Scaling */
+            xScale = d3.scaleLinear()
+                .domain([d3.min(json, function (d) { return d.date; }), d3.max(json, function (d) { return d.date; })])
+                .range([xPaddingLeft, w - xPaddingLeft - xPaddingRight]);
+
+            yScale = d3.scaleLinear()
+                .domain([0, d3.max(json, function (d) { return d.value; })])
+                .range([h - yPaddingTop, yPaddingBottom]);
+
+            //Create circles
+            svg.selectAll("circle")
+                .data(json, key)
+                .enter()
+                .append("circle")
+                .attr("cx", function (d) {
+                    return xScale(parseInt(d.date));
+                })
+                .attr("cy", function (d) {
+                    return yScale(d.value);
+                })
+                .attr("r", 2);
+
+            //Define X axis
+            var xAxis = d3.axisBottom()
+                .scale(xScale)
+                .ticks(6)
+                .tickFormat(formatAsYear);
+
+            //Define Y axis
+            var yAxis = d3.axisLeft()
+                .scale(yScale)
+                .ticks(6)
+                .tickFormat(formatAsUSD);
+
+            //Create X axis
+            svg.append("g")
+                .attr("class", "axis")
+                .attr("transform", "translate(0," + (h - yPaddingTop) + ")")
+                .call(xAxis);
+
+            //Create Y axis
+            svg.append("g")
+                .attr("class", "axis")
+                .attr("transform", "translate(" + xPaddingLeft + ",0)")
+                .call(yAxis);
+        }
+    </script>
+</body>
