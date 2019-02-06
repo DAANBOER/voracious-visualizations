@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Pie chart test</title>
+    <script type="text/javascript" src="../d3/d3.js"></script>
+</head>
+<style>
+    path {
+            fill: orange;
+            stroke: white;
+        }
+</style>
+
+<body>
+    <!-- <svg width="700" height="220">
+        <g transform="translate(300, 110)"></g>
+    </svg> -->
+    <script type="text/javascript">
+        d3.select("body").append("p").text("Pie chart test");
+
+        var svg = d3.select("body")
+            .append("svg")
+            .attr("width", "700")
+            .attr("height", "220")
+            .append("g")
+                .attr("transform", "translate(300, 110)");
+
+        // Create an arc generator with configuration and accessor functions
+        var arcGenerator = d3.arc()
+            .innerRadius(0)
+            .outerRadius(100)
+            .startAngle(function (d) {
+                return d.startAngleOfMyArc;
+            })
+            .endAngle(function (d) {
+                return d.endAngleOfMyArc;
+            });
+
+        var arcData = [
+            { startAngleOfMyArc: 0, endAngleOfMyArc: 0.2 },
+            { startAngleOfMyArc: 0.2, endAngleOfMyArc: 0.6 },
+            { startAngleOfMyArc: 0.6, endAngleOfMyArc: 1.4 },
+            { startAngleOfMyArc: 1.4, endAngleOfMyArc: 3 },
+            { startAngleOfMyArc: 3, endAngleOfMyArc: 2 * Math.PI }
+        ];
+
+        // Create a path element and set its d attribute
+        svg.selectAll('path')
+            .data(arcData)
+            .enter()
+            .append('path')
+            .attr('d', arcGenerator);
+
+
+    </script>
+</body>
+
+</html>
