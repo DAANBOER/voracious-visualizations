@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>D3 Page Template</title>
+    <title>Load data test</title>
     <script type="text/javascript" src="../d3/d3.js"></script>
 </head>
 
@@ -11,13 +11,51 @@
     <script type="text/javascript">
         d3.select("body").append("p").text("Test loading data with API");
         d3.json("http://api.worldbank.org/v2/country/US/indicators/NY.GDP.MKTP.CD?format=json")
-            .then(test);
+            .then(function (data) {
+                var jsonGDP = data[1];
 
-        function test(data) {
-            var json = data[1];
-            
-            console.log(json);
-            }
+                console.log(jsonGDP);
+
+                var points = [[jsonGDP.date], [jsonGDP.value]];
+
+                console.log(points);
+            });
+
+        var filterCombined = function (d) {
+            return (d.countryiso3code != "");
+        }
+
+        d3.json("http://api.worldbank.org/v2/country/all/indicator/SP.POP.TOTL?date=2000&per_page=400&format=json")
+            .then(function (data) {
+                var jsonPOP = data[1].filter(filterCombined);
+
+                console.log(jsonPOP);
+                console.log(jsonPOP[3].countryiso3code);
+
+                dataPOPtest =
+                    {
+                        "NY": { "fillKey": "Visited", "info": "Born here" },
+                        "TX": { "fillKey": "Visited", "info": "Live here" },
+                        "CA": { "fillKey": "Visited", "info": "Here while writing this code" }
+                    }
+
+                console.log(dataPOPtest);
+
+
+                var dataPOP = new Object();
+
+                var i;
+                for (i = 0; i < jsonPOP.length; i++) {
+                    dataPOP[jsonPOP[i].countryiso3code] = { value: jsonPOP[i].value };
+                };
+
+                console.log(dataPOP);
+            });
+
+
+
+
+
     </script>
 </body>
 
