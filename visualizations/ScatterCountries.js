@@ -68,29 +68,31 @@ class ScatterCountries {
         var combined = {};
 
         for (var i = 0; i < data1.length; i++) {
-            if (!(Array.isArray(combined[data1.date]))) {
-                combined[data1.date] = [];
+            if (!(Array.isArray(combined[data1[i].date]))) {
+                combined[data1[i].date] = [];
             }
-            combined[data1.date].push({ "countryiso3code": data1[i].countryiso3code, "value1": data1[i].value, "value2": data2[i].value });
+            combined[data1[i].date].push({ "countryiso3code": data1[i].countryiso3code, "value1": data1[i].value, "value2": data2[i].value });
         }
 
         console.log(combined)
 
-        combined = combined.filter(this.filterEmptyValues2);
-        console.log(combined);
+        // combined = combined.filter(this.filterEmptyValues2);
+        // console.log(combined);
+
+        var testdata = combined["2016"];
 
         //Create scale functions
         var xScale = d3.scaleLinear()
             .domain([
-                d3.min(combined, function (d) { return d.value1; }),
-                d3.max(combined, function (d) { return d.value1; })
+                d3.min(testdata, function (d) { return d.value1; }),
+                d3.max(testdata, function (d) { return d.value1; })
             ])
             .range([this.padding, this.svg.attr('width') - this.padding]);
 
         var yScale = d3.scaleLinear()
             .domain([
-                d3.min(combined, function (d) { return d.value2; }),
-                d3.max(combined, function (d) { return d.value2; })
+                d3.min(testdata, function (d) { return d.value2; }),
+                d3.max(testdata, function (d) { return d.value2; })
             ])
             .range([this.svg.attr('height') - this.padding, this.padding]);
 
@@ -106,7 +108,7 @@ class ScatterCountries {
 
         //Generate circles last, so they appear in front
         this.svg.selectAll("circle")
-            .data(combined)
+            .data(testdata)
             .enter()
             .append("circle")
             .attr("cx", function (d) {
