@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Scatter Countries</title>
+</head>
+
+<body>
+    
+    <script type="text/javascript" src="../d3/d3.js"></script>
+    <script type="text/javascript" src="ScatterCountries.js"></script>
+    <script type="text/javascript">
+        var w = 700;
+        var h = 500;
+
+        //Create SVG element
+        var svg = d3.select("body")
+            .append("svg")
+            .attr("width", w)
+            .attr("height", h);
+
+        // population growth per country (on x axis, first variable) vs total population per country (on y axis, second variable) in the US
+        var scatterCountries = new ScatterCountries(svg, "http://api.worldbank.org/v2/country/all/indicators/SP.POP.GROW?per_page=20000&format=json", "http://api.worldbank.org/v2/country/all/indicators/SP.POP.TOTL?per_page=20000&format=json");
+
+        scatterCountries.visualize();
+    </script>    
+</body >
+</html >
