@@ -35,7 +35,7 @@ class BarChart {
             return d.country.id;
         };
 
-
+        
         var filterCombined = function (d) {
             return (d.countryiso3code != "");
         }
