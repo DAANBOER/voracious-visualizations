@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../d3/d3.js"></script>
     <!-- <script src="http://d3js.org/d3.v3.min.js"></script> -->
     <script src="http://d3js.org/queue.v1.min.js"></script>
-    <script type="text/javascript" src="ScatterPlot.js"></script>
+    <script type="text/javascript" src="ScatterCountries.js"></script>
     <script type="text/javascript">
         var w = 500;
         var h = 300;
@@ -38,9 +38,9 @@
             .attr("height", h);
 
         // income share hold by the lowest 20% (on x axis, first variable) vs GDP (on y axis, second variable) in the US
-        var scatterPlot = new ScatterPlot(svg, "http://api.worldbank.org/v2/country/US/indicators/SI.DST.FRST.20?format=json", "http://api.worldbank.org/v2/country/US/indicators/NY.GDP.MKTP.CD?format=json");
+        var scatterCountries = new ScatterCountries(svg, "http://api.worldbank.org/v2/country/US/indicators/SI.DST.FRST.20?format=json", "http://api.worldbank.org/v2/country/US/indicators/NY.GDP.MKTP.CD?format=json");
 
-        scatterPlot.visualize();
+        scatterCountries.visualize();
 
     </script>
 </body>
