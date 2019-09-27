@@ -1,6 +1,7 @@
 class BarChart {
-    constructor(data, svg) {
+    constructor(data, vis, svg) {
         this._data = data;
+        this.vis = vis;
         this.svg = svg;
 
         this.xScale = [];
@@ -51,7 +52,7 @@ class BarChart {
 
         this.xScale = d3.scaleLinear()
             .domain([0, d3.max(json, function (d) { return d.value; })])
-            .range([1, this.svg.attr('width') - 2 * xPadding]);
+            .range([1, this.vis.node().getBoundingClientRect().width - 2 * xPadding]);
 
         this.yScale = d3.scaleBand()
             .domain(d3.range(json.length))
@@ -104,7 +105,7 @@ class BarChart {
             .attr("fill", "black");
 
         groups.append('rect')
-            .attr('class', 'row')
+            .attr('class', 'row-group')
             .attr('x', 0)
             .attr('y', 0)
             .attr('width', w)

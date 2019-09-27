@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Visualization Grid</title>
+    <style>/* CSS */
+        #draw-area {
+            overflow-y: scroll;
+            overflow-x: hidden;
+            width: 100%;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script type="text/javascript" src="../d3/d3.js"></script>
+    <script type="text/javascript" src="BarChart.js"></script>
+
+    <script type="text/javascript">
+        var h = 400;
+        var w = 500;
+
+        var row = d3.select("body")
+                    .append("div")
+                    .attr("class", "row");
+
+        var makeVisObject = function() {
+            var test = row.append('div')
+                         .attr('class', 'col s4');
+
+            var vis = test.append('div').attr('id', 'draw-area');
+
+            console.log(vis.node().getBoundingClientRect());
+
+            var svg = vis.append("svg")
+                .attr('width', '100%').attr('height', h);
+
+            return {
+                'vis': vis,
+                'svg': svg
+            };
+        }
+
+        d3.select("body")
+            .append("p")
+            .attr('id', 'asc')
+            .text("Ascending");
+
+        d3.select("body")
+            .append("p")
+            .attr('id', 'des')
+            .text("Descending");
+        
+        var obj1 = makeVisObject();
+        var obj2 = makeVisObject();
+
+        var bars = new BarChart("http://api.worldbank.org/v2/country/all/indicator/SP.POP.TOTL?date=2000&per_page=400&format=json", obj1.vis, obj1.svg);
+        var bars2 = new BarChart("http://api.worldbank.org/v2/country/all/indicator/SP.POP.TOTL?date=1960&per_page=400&format=json", obj2.vis, obj2.svg);
+        
+        bars.visualize();
+        bars2.visualize();
+
+        d3.select("body")
+            .selectAll("p")
+            .on("click", function () {
+                bars.sort(d3.select(this).attr('id') == 'asc');
+                bars2.sort(d3.select(this).attr('id') == 'asc');
+            });
+    </script>
+</body>
+</html>
